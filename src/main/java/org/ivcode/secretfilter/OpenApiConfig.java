@@ -1,6 +1,5 @@
 package org.ivcode.secretfilter;
 
-import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
@@ -9,7 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 
 /**
- * Open API
+ * Open API annotations
  * @author isaiah
  */
 
@@ -24,27 +23,15 @@ import io.swagger.v3.oas.annotations.info.Info;
 		flows = @OAuthFlows(
 				implicit = @OAuthFlow(
 						authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
-						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}",
-						scopes = {
-								@OAuthScope(name = "properties.read", description = "read access"),
-								@OAuthScope(name = "properties.write", description = "write access")}),
+						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}"),
 				clientCredentials = @OAuthFlow(
 						authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
-						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}",
-						scopes = {
-								@OAuthScope(name = "properties.read", description = "read access"),
-								@OAuthScope(name = "properties.write", description = "write access")}),
+						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}"),
 				authorizationCode = @OAuthFlow(
 						authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
-						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}",
-						scopes = {
-								@OAuthScope(name = "properties.read", description = "read access"),
-								@OAuthScope(name = "properties.write", description = "write access")}),
+						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}"),
 				password = @OAuthFlow(
-							authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
-							tokenUrl = "${springdoc.oAuthFlow.tokenUrl}",
-								scopes = {
-									@OAuthScope(name = "properties.read", description = "read access"),
-									@OAuthScope(name = "properties.write", description = "write access")})))
+						authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
+						tokenUrl = "${springdoc.oAuthFlow.tokenUrl}")))
 public class OpenApiConfig {
 }

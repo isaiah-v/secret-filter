@@ -36,6 +36,9 @@ public class EnvironmentEntity {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
+	@Column(name = "READABLE")
+	private Boolean readable;
+
 	@ManyToOne
 	@JoinColumn(name = "PROJECT_ID")
 	private ProjectEntity project;
@@ -50,6 +53,7 @@ public class EnvironmentEntity {
 		this.path = entity.path;
 		this.name = entity.name;
 		this.description = entity.description;
+		this.readable = entity.readable;
 		this.project = entity.project == null ? null : new ProjectEntity(entity.project);
 	}
 
@@ -91,6 +95,14 @@ public class EnvironmentEntity {
 
 	public void setProject(ProjectEntity project) {
 		this.project = project;
+	}
+
+	public Boolean getReadable() {
+		return readable;
+	}
+
+	public void setReadable(Boolean readable) {
+		this.readable = readable;
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.util.List;
 import org.ivcode.secretfilter.controller.model.EnvironmentDTO;
 import org.ivcode.secretfilter.service.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,14 +37,12 @@ public class EnvironmentController {
 	 * @return
 	 */
 	@GetMapping(path = "/projects/{project}/environments")
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public List<String> getPaths(
 			@PathVariable("project") String projectPath) {
 		return service.getPaths(projectPath);
 	}
 	
 	@GetMapping(path = "/projects/{project}/environments/{environment}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public EnvironmentDTO getProject(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {
@@ -53,7 +50,6 @@ public class EnvironmentController {
 	}
 	
 	@PostMapping(path = "/projects/{project}/environments/{environment}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void postProject(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath,
@@ -63,7 +59,6 @@ public class EnvironmentController {
 	}
 	
 	@PutMapping(path = "/projects/{project}/environments/{environment}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void putProject(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath,
@@ -73,7 +68,6 @@ public class EnvironmentController {
 	}
 	
 	@DeleteMapping(path = "/projects/{project}/environments/{environment}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void deleteProject(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {

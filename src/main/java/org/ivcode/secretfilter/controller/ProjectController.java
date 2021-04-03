@@ -5,7 +5,6 @@ import java.util.List;
 import org.ivcode.secretfilter.controller.model.ProjectDTO;
 import org.ivcode.secretfilter.service.ProjectsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,14 +34,12 @@ public class ProjectController {
 
 	@Operation(description = "Returns available projects")
 	@GetMapping(path = "/projects")
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public List<String> getPaths() {
 		return projectService.getPaths();
 	}
 
 	@Operation(description = "Returns the details for the project defined at the given path")
 	@GetMapping(path = "/projects/{project}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public ProjectDTO getProject(
 			@PathVariable("project") @Parameter(description = "project's path variable") String path) {
 		return projectService.readProject(path);
@@ -50,7 +47,6 @@ public class ProjectController {
 
 	@Operation(description = "Creates a project at the given path")
 	@PostMapping(path = "/projects/{project}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void postProject(@PathVariable("project") @Parameter(description = "project's path variable") String path,
 			@RequestBody ProjectDTO dto) {
 		projectService.createProject(path, dto);
@@ -58,7 +54,6 @@ public class ProjectController {
 
 	@Operation(description = "Update the project at the given path")
 	@PutMapping(path = "/projects/{project}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void putProject(@PathVariable("project") @Parameter(description = "project's path variable") String path,
 			@RequestBody ProjectDTO dto) {
 		projectService.updateProject(path, dto);
@@ -66,7 +61,6 @@ public class ProjectController {
 
 	@Operation(description = "Deletes the project at the given path")
 	@DeleteMapping(path = "/projects/{project}")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void deleteProject(
 			@PathVariable("project") @Parameter(description = "project's path variable") String path) {
 		projectService.deleteProject(path);

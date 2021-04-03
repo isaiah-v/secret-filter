@@ -3,8 +3,8 @@ package org.ivcode.secretfilter.controller;
 import java.util.Map;
 
 import org.ivcode.secretfilter.service.PropertiesService;
+import org.ivcode.secretfilter.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,16 +31,15 @@ public class PropertiesController {
 	private PropertiesService service;
 	
 	@GetMapping(path = "/projects/{project}/environments/{environment}/properties")
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public Map<String, String> getProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {
 		
-		return service.readProperties(projectPath, envPath);
+		SecurityUtils.isLimitedAccess();
+		return service.readProperties(projectPath, envPath, SecurityUtils.isLimitedAccess());
 	}
 	
 	@PostMapping(path = "/projects/{project}/environments/{environment}/properties")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void postProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath,
@@ -50,7 +49,6 @@ public class PropertiesController {
 	}
 	
 	@PutMapping(path = "/projects/{project}/environments/{environment}/properties")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void putProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath,
@@ -60,7 +58,6 @@ public class PropertiesController {
 	}
 	
 	@DeleteMapping(path = "/projects/{project}/environments/{environment}/properties")
-	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
 	public void deleteProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {

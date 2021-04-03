@@ -2,6 +2,7 @@ package org.ivcode.secretfilter.utils;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * A set of methods that can be used on collections to avoid null pointer
@@ -28,5 +29,9 @@ public class CollectionSafety {
 	 */
 	public static <T> Collection<T> safe(Collection<T> c) {
 		return c == null ? Collections.emptyList() : c;
+	}
+	
+	public static <K,V> Map<K,V> safe(Map<K,V> m) {
+		return m == null ? Collections.emptyMap() : m;
 	}
 }

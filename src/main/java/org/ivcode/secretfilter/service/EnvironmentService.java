@@ -128,6 +128,7 @@ public class EnvironmentService {
 		entity.setPath(path);
 		entity.setName(envDto.getName());
 		entity.setDescription(envDto.getDescription());
+		entity.setReadable(envDto.isReadable());
 
 		return entity;
 	}

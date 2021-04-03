@@ -18,6 +18,7 @@ public class EnvironmentDTO {
 
 	private String name;
 	private String description;
+	private boolean readable;
 
 	public EnvironmentDTO() {
 	}
@@ -25,6 +26,7 @@ public class EnvironmentDTO {
 	public EnvironmentDTO(EnvironmentEntity entity) {
 		this.name = entity.getName();
 		this.description = entity.getDescription();
+		this.readable = Boolean.TRUE.equals(entity.getReadable());
 	}
 
 	public String getName() {
@@ -41,6 +43,14 @@ public class EnvironmentDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isReadable() {
+		return readable;
+	}
+
+	public void setReadable(boolean readable) {
+		this.readable = readable;
 	}
 
 	@Override

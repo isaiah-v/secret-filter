@@ -1,12 +1,10 @@
 package org.ivcode.secretfilter.service;
 
-import static org.ivcode.secretfilter.utils.CollectionSafety.*;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +27,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PropertiesService {
 
+	private static final String VALUE_MASK = "******";
+	
 	@Autowired
 	private PropertiesRepository repository;
 
@@ -40,11 +40,6 @@ public class PropertiesService {
 		if (properties == null || properties.isEmpty()) {
 			// TODO
 			throw new IllegalStateException();
-		}
-
-		if (!isNamesUnique(properties.keySet())) {
-			// TODO
-			throw new IllegalArgumentException();
 		}
 
 		var existing = repository.getProperties(projectPath, envPath);
@@ -64,9 +59,9 @@ public class PropertiesService {
 	}
 
 	@Transactional
-	public Map<String, String> readProperties(String projectPath, String envPath) {
+	public Map<String, String> readProperties(String projectPath, String envPath, boolean limited) {
 		var entities = repository.getProperties(projectPath, envPath);
-		return toProperties(entities);
+		return toProperties(entities, limited);
 	}
 
 	@Transactional
@@ -74,11 +69,6 @@ public class PropertiesService {
 		if (properties == null || properties.isEmpty()) {
 			// TODO
 			throw new IllegalStateException();
-		}
-
-		if (!isNamesUnique(properties.keySet())) {
-			// TODO
-			throw new IllegalArgumentException();
 		}
 
 		var entities = repository.getProperties(projectPath, envPath);
@@ -144,19 +134,14 @@ public class PropertiesService {
 		return entities;
 	}
 
-	private Map<String, String> toProperties(List<PropertyEntity> entities) {
-		return safe(entities).stream().collect(toMap(PropertyEntity::getName, PropertyEntity::getValue));
-	}
-
-	private boolean isNamesUnique(Collection<String> names) {
-		var keys = new HashSet<String>();
-		for (var name : names) {
-
-			if (!keys.add(trim(lowerCase(name)))) {
-				return false;
-			}
+	private Map<String, String> toProperties(List<PropertyEntity> entities, boolean limited) {
+		var properties = new LinkedHashMap<String, String>();
+		
+		for(var entity : entities) {
+			var isMask = limited && !Boolean.TRUE.equals(entity.getEnvironment().getReadable());
+			properties.put(entity.getName(), isMask ? VALUE_MASK : entity.getValue());
 		}
-
-		return true;
+		
+		return properties;
 	}
 }

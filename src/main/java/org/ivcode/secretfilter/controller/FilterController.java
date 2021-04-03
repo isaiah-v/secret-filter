@@ -6,11 +6,11 @@ import java.io.Reader;
 import java.net.URL;
 
 import org.ivcode.secretfilter.service.FilterService;
+import org.ivcode.secretfilter.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +35,6 @@ public class FilterController {
 	private FilterService filterService;
 
 	@GetMapping(path = "/projects/{project}/environments/{environment}/filter", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public ResponseEntity<StreamingResponseBody> getProperties(@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath, @RequestParam("url") URL url) throws IOException {
 
@@ -43,7 +42,7 @@ public class FilterController {
 
 		StreamingResponseBody responseBody = out -> {
 			try {
-				filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out));
+				filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out), SecurityUtils.isLimitedAccess());
 				out.flush();
 			} finally {
 				reader.close();

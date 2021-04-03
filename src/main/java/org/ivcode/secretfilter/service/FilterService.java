@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 public class FilterService {
 
 	@Autowired
+	private EnvironmentService environmentService;
+	
+	@Autowired
 	private PropertiesService propertiesService;
 
 	public Reader createReader(URL url) throws IOException {
@@ -32,8 +35,15 @@ public class FilterService {
 		return new StringReader(value);
 	}
 
-	public void filter(String projectPath, String envPath, Reader reader, Writer writer) throws IOException {
-		var properties = propertiesService.readProperties(projectPath, envPath);
+	public void filter(String projectPath, String envPath, Reader reader, Writer writer, boolean limited) throws IOException {
+		
+		var env = environmentService.readEnvironment(projectPath, envPath);
+		if(!env.isReadable() && limited) {
+			// TODO
+			throw new IllegalArgumentException();
+		}
+		
+		var properties = propertiesService.readProperties(projectPath, envPath, limited);
 
 		try (var substitutorReader = new StringSubstitutorReader(reader, new StringSubstitutor(properties))) {
 			var buffer = new char[1024];
