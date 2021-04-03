@@ -1,4 +1,9 @@
 # secret-filter
-A simple service to manage secrets
 
-This is a simple service used to manage properties and property files. 
+A service used to populate the placeholders property files when deploying applications.
+
+### Problem
+Property files used to manage envoirnmental properties sometimes contain private information. Given that my source-code is public, how to I manage these private property values.
+
+### Solution
+Use placeholders in the property files and replace them when deploying my applications.
