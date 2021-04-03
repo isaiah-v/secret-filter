@@ -32,7 +32,7 @@ pipeline {
                 label 'arm64'
             }
             steps {
-                doClean('amd64');
+                doClean('arm64');
             }
         }
         stage('Build Amd64') {
