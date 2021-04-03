@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://ci.ivcode.org/keycloak/realms/ci
+  datasource:
+    url: jdbc:h2:file:./h2/data
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+springdoc:
+  oAuthFlow:
+    authorizationUrl: https://ci.ivcode.org/keycloak/realms/ci/protocol/openid-connect/auth
+    tokenUrl: https://ci.ivcode.org/keycloak/realms/ci/protocol/openid-connect/token
+    

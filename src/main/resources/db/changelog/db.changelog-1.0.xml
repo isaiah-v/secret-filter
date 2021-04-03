@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+	<changeSet author="isaiah" id="1.0.1">
+		<createTable tableName="PROJECTS">
+			<column name="PROJECT_ID" type="INT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" unique="true" />
+			</column>
+			<column name="PATH" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="NAME" type="VARCHAR(255)" />
+			<column name="DESCRIPTION" type="VARCHAR(1000)" />
+		</createTable>
+		<createIndex tableName="PROJECTS" indexName="IDX_PROJECT_PATH">
+			<column name="PATH"/>
+		</createIndex>
+	</changeSet>
+
+	<changeSet author="isaiah" id="1.0.2">
+		<createTable tableName="ENVIRONMENTS">
+			<column name="ENVIRONMENT_ID" type="INT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" unique="true" />
+			</column>
+			<column name="PROJECT_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="PATH" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="NAME" type="VARCHAR(255)" />
+			<column name="DESCRIPTION" type="VARCHAR(1000)" />
+		</createTable>
+		<createIndex tableName="ENVIRONMENTS" indexName="IDX_ENVIRONMENT_PATH">
+			<column name="PATH"/>
+		</createIndex>
+	</changeSet>
+
+	<changeSet author="isaiah" id="1.0.3">
+		<addForeignKeyConstraint
+			constraintName="FK_ENVIRONMENTS_PROJECTS"
+			baseTableName="ENVIRONMENTS"
+			baseColumnNames="PROJECT_ID"
+			referencedTableName="PROJECTS"
+			referencedColumnNames="PROJECT_ID"
+			onDelete="CASCADE"
+			onUpdate="RESTRICT" />
+	</changeSet>
+
+	<changeSet author="isaiah" id="1.0.4">
+		<createTable tableName="PROPERTIES">
+			<column name="PROPERTY_ID" type="INT" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true" unique="true" />
+			</column>
+			<column name="ENVIRONMENT_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="NAME" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="VALUE" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet author="isaiah" id="1.0.5">
+		<addForeignKeyConstraint
+			constraintName="FK_PROPERTIES_ENVIRONMENTS"
+			baseTableName="PROPERTIES"
+			baseColumnNames="ENVIRONMENT_ID"
+			referencedTableName="ENVIRONMENTS"
+			referencedColumnNames="ENVIRONMENT_ID"
+			onDelete="CASCADE"
+			onUpdate="RESTRICT" />
+	</changeSet>
+
+</databaseChangeLog> 
