@@ -10,6 +10,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Manages precedences of {@link ProjectEntity}s
+ * @author isaiah
+ *
+ */
 @Resource
 public interface ProjectRepository extends JpaRepository<ProjectEntity, UUID> {
 	@Query("SELECT p FROM ProjectEntity p WHERE UPPER(p.path)=UPPER(:path)")

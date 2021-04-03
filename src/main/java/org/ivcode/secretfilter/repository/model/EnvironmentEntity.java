@@ -12,6 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * An entity that represents an environment
+ * 
+ * @author isaiah
+ *
+ */
 @Entity
 @Table(name = "ENVIRONMENTS")
 public class EnvironmentEntity {
@@ -31,20 +37,20 @@ public class EnvironmentEntity {
 	private String description;
 
 	@ManyToOne
-	@JoinColumn(name="PROJECT_ID")
+	@JoinColumn(name = "PROJECT_ID")
 	private ProjectEntity project;
-	
+
 	public EnvironmentEntity() {
 	}
-	
+
 	public EnvironmentEntity(EnvironmentEntity entity) {
 		notNull(entity);
-		
+
 		this.environmentId = entity.environmentId;
 		this.path = entity.path;
 		this.name = entity.name;
 		this.description = entity.description;
-		this.project = entity.project==null ? null : new ProjectEntity(entity.project);
+		this.project = entity.project == null ? null : new ProjectEntity(entity.project);
 	}
 
 	public Integer getEnvironmentId() {
@@ -86,7 +92,7 @@ public class EnvironmentEntity {
 	public void setProject(ProjectEntity project) {
 		this.project = project;
 	}
-	
+
 	@Override
 	public String toString() {
 		return reflectionToString(this);

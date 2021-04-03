@@ -6,6 +6,12 @@ import org.ivcode.secretfilter.repository.model.ProjectEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Represents a project. This class contains information about a projects.
+ * 
+ * @author isaiah
+ *
+ */
 @Schema(name = "Project")
 public class ProjectDTO {
 
@@ -35,7 +41,7 @@ public class ProjectDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Override
 	public String toString() {
 		return reflectionToString(this);

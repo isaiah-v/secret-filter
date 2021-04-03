@@ -5,13 +5,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller returns information about the system
+ * 
+ * @author isaiah
+ *
+ */
 @RestController
 @RequestMapping("/info")
 public class InfoController {
-	
+
 	@Value("${version}")
 	private String version;
-	
+
 	@GetMapping
 	public String getVersion() {
 		return version;

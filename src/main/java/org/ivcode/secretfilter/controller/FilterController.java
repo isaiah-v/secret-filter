@@ -19,36 +19,39 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+/**
+ * This controller pulls everything together. It's used to pull a resource over
+ * the Internet and apply the filter, replacing any placeholders with property
+ * values.
+ * 
+ * @author isaiah
+ *
+ */
 @RestController
 @SecurityRequirement(name = "Authorization")
 public class FilterController {
-	
+
 	@Autowired
 	private FilterService filterService;
-	
+
 	@GetMapping(path = "/projects/{project}/environments/{environment}/filter", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
-	public ResponseEntity<StreamingResponseBody> getProperties(
-			@PathVariable("project") String projectPath,
-			@PathVariable("environment") String envPath,
-			@RequestParam("url") URL url) throws IOException {
-		
+	public ResponseEntity<StreamingResponseBody> getProperties(@PathVariable("project") String projectPath,
+			@PathVariable("environment") String envPath, @RequestParam("url") URL url) throws IOException {
+
 		Reader reader = filterService.createReader(url);
-		
+
 		StreamingResponseBody responseBody = out -> {
-		     try {
-		    	 filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out));
-		    	 out.flush();
-		     } finally {
-		    	 reader.close();
-		     }
+			try {
+				filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out));
+				out.flush();
+			} finally {
+				reader.close();
+			}
 		};
-		
-		return ResponseEntity
-				.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + url.getFile())
-	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-				.body(responseBody);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + url.getFile())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(responseBody);
 	}
-	
+
 }

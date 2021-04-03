@@ -18,20 +18,28 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+/**
+ * A given project can have multiple environments. Each environment can define
+ * its own set of properties. This controller defines calls to manage the
+ * projects.
+ * 
+ * @author isaiah
+ *
+ */
 @RestController
 @SecurityRequirement(name = "Authorization")
 public class ProjectController {
-	
+
 	@Autowired
 	private ProjectsService projectService;
-	
+
 	@Operation(description = "Returns available projects")
 	@GetMapping(path = "/projects")
 	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
 	public List<String> getPaths() {
 		return projectService.getPaths();
 	}
-	
+
 	@Operation(description = "Returns the details for the project defined at the given path")
 	@GetMapping(path = "/projects/{project}")
 	@PreAuthorize("hasAuthority('SCOPE_properties.read')")
@@ -39,25 +47,23 @@ public class ProjectController {
 			@PathVariable("project") @Parameter(description = "project's path variable") String path) {
 		return projectService.readProject(path);
 	}
-	
+
 	@Operation(description = "Creates a project at the given path")
 	@PostMapping(path = "/projects/{project}")
 	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
-	public void postProject(
-			@PathVariable("project") @Parameter(description = "project's path variable") String path,
+	public void postProject(@PathVariable("project") @Parameter(description = "project's path variable") String path,
 			@RequestBody ProjectDTO dto) {
 		projectService.createProject(path, dto);
 	}
-	
+
 	@Operation(description = "Update the project at the given path")
 	@PutMapping(path = "/projects/{project}")
 	@PreAuthorize("hasAuthority('SCOPE_properties.write')")
-	public void putProject(
-			@PathVariable("project") @Parameter(description = "project's path variable") String path,
+	public void putProject(@PathVariable("project") @Parameter(description = "project's path variable") String path,
 			@RequestBody ProjectDTO dto) {
 		projectService.updateProject(path, dto);
 	}
-	
+
 	@Operation(description = "Deletes the project at the given path")
 	@DeleteMapping(path = "/projects/{project}")
 	@PreAuthorize("hasAuthority('SCOPE_properties.write')")

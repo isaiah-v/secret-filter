@@ -10,6 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * An entity that represents a project
+ * 
+ * @author isaiah
+ *
+ */
 @Entity
 @Table(name = "PROJECTS")
 public class ProjectEntity {
@@ -27,13 +33,13 @@ public class ProjectEntity {
 
 	@Column(name = "DESCRIPTION")
 	private String description;
-	
+
 	public ProjectEntity() {
 	}
-	
+
 	public ProjectEntity(ProjectEntity entity) {
 		notNull(entity);
-		
+
 		this.projectId = entity.projectId;
 		this.path = entity.path;
 		this.name = entity.name;
@@ -71,7 +77,7 @@ public class ProjectEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Override
 	public String toString() {
 		return reflectionToString(this);

@@ -12,30 +12,36 @@ import org.apache.commons.text.io.StringSubstitutorReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Performs the filtering process
+ * 
+ * @author isaiah
+ *
+ */
 @Service
 public class FilterService {
-	
+
 	@Autowired
 	private PropertiesService propertiesService;
-	
+
 	public Reader createReader(URL url) throws IOException {
 		return new InputStreamReader(url.openStream());
 	}
-	
+
 	public Reader createReader(String value) {
 		return new StringReader(value);
 	}
-	
+
 	public void filter(String projectPath, String envPath, Reader reader, Writer writer) throws IOException {
 		var properties = propertiesService.readProperties(projectPath, envPath);
-		
-		try(var substitutorReader = new StringSubstitutorReader(reader, new StringSubstitutor(properties))) {
+
+		try (var substitutorReader = new StringSubstitutorReader(reader, new StringSubstitutor(properties))) {
 			var buffer = new char[1024];
 			var size = -1;
-			while((size=substitutorReader.read(buffer, 0, buffer.length))!=-1) {
+			while ((size = substitutorReader.read(buffer, 0, buffer.length)) != -1) {
 				writer.write(buffer, 0, size);
 			}
-			
+
 			writer.flush();
 		}
 	}

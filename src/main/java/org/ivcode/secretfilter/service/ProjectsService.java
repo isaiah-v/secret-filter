@@ -1,7 +1,7 @@
 package org.ivcode.secretfilter.service;
 
 import static java.util.stream.Collectors.*;
-import static org.ivcode.secretfilter.utils.CollectionSafty.*;
+import static org.ivcode.secretfilter.utils.CollectionSafety.*;
 
 import java.util.List;
 
@@ -13,6 +13,12 @@ import org.ivcode.secretfilter.repository.model.ProjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Performs business logic related to a project
+ * 
+ * @author isaiah
+ *
+ */
 @Service
 public class ProjectsService {
 
@@ -45,7 +51,7 @@ public class ProjectsService {
 
 		return new ProjectDTO(entity);
 	}
-	
+
 	@Transactional
 	public ProjectEntity readEntity(String path) {
 		return repository.find(path);
@@ -70,7 +76,7 @@ public class ProjectsService {
 	private ProjectEntity createEntity(String path, ProjectDTO dto) {
 		var entity = new ProjectEntity();
 		updateEntity(entity, path, dto);
-		
+
 		return entity;
 	}
 

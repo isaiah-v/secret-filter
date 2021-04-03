@@ -11,6 +11,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * An entity that represents a property
+ * 
+ * @author isaiah
+ *
+ */
 @Entity
 @Table(name = "PROPERTIES")
 public class PropertyEntity {
@@ -61,7 +67,7 @@ public class PropertyEntity {
 	public void setEnvironment(EnvironmentEntity environment) {
 		this.environment = environment;
 	}
-	
+
 	@Override
 	public String toString() {
 		return reflectionToString(this);

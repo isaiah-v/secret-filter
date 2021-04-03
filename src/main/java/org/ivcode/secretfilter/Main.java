@@ -8,6 +8,11 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * The entry point for the application
+ * @author isaiah
+ *
+ */
 @SpringBootApplication
 public class Main {
 	

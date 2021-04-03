@@ -15,6 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+/**
+ * A given project can have multiple environments. Each environment can define
+ * its own set of properties. This controller defines the calls to manage the
+ * properties for a given project and environment.
+ * 
+ * @author isaiah
+ *
+ */
 @RestController
 @SecurityRequirement(name = "Authorization")
 public class PropertiesController {
