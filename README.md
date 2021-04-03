@@ -2,8 +2,6 @@
 
 A service used to populate placeholders in property files when deploying applications.
 
-### Problem
-Property files used to manage envoirnmental properties sometimes contain private information. Given that my source-code is public, how to I manage these private property values.
+*Problem*: Property files are used to manage envoirnmental properties and sometimes contain private information. Given that my source-code is public, how to I manage keeping these private values private?
 
-### Solution
-Use placeholders in the property files and replace them when deploying my applications.
+*Solution*: Use placeholders in the property files and replace them when deploying my applications.
