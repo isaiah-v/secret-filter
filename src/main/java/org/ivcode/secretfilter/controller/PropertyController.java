@@ -1,9 +1,9 @@
 package org.ivcode.secretfilter.controller;
 
-import java.util.List;
+import java.util.Map;
 
-import org.ivcode.secretfilter.controller.model.EnvironmentDTO;
-import org.ivcode.secretfilter.service.EnvironmentService;
+import org.ivcode.secretfilter.service.PropertyService;
+import org.ivcode.secretfilter.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,88 +24,75 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 /**
  * A given project can have multiple environments. Each environment can define
  * its own set of properties. This controller defines the calls to manage the
- * environments within a project.
+ * properties for a given project and environment.
  * 
  * @author isaiah
  *
  */
 @RestController
 @SecurityRequirement(name = "Authorization")
-public class EnvironmentController {
+public class PropertyController {
 	
 	@Autowired
-	private EnvironmentService service;
+	private PropertyService service;
 	
-	/**
-	 * Gets the available environment paths
-	 * @param projectPath
-	 * 		The project
-	 * @return
-	 */
-	@Operation(description = "Return the available environment path variables")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "OK"),
-		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
-		@ApiResponse(responseCode = "404", description = "Not Found - Project not found", content = @Content(schema = @Schema(hidden = true)))})
-	@GetMapping(path = "/projects/{project}/environments", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public List<String> getPaths(
-			@PathVariable("project") String projectPath) {
-		return service.getPaths(projectPath);
-	}
-	
-	@Operation(description = "Return the detail information for the environment defined at the given path")
+	@Operation(description = "Return the available properties for the given project and environment. Note the property values returned will be masked unless the user has admin rights or the environment is set as readable")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK"),
 		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
 		@ApiResponse(responseCode = "404", description = "Not Found - Project or environment not found", content = @Content(schema = @Schema(hidden = true)))})
-	@GetMapping(path = "/projects/{project}/environments/{environment}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public EnvironmentDTO getProject(
+	@GetMapping(path = "/projects/{project}/environments/{environment}/properties", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public Map<String, String> getProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {
-		return service.readEnvironment(projectPath, envPath);
+		
+		return service.readProperties(projectPath, envPath, SecurityUtils.isLimitedAccess());
 	}
 	
-	@Operation(description = "Insert an environment at the given path")
+	@Operation(description = "Insert the properties for the given project and environment")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK"),
+		@ApiResponse(responseCode = "400", description = "Bad Request - Empty properties"),
 		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
 		@ApiResponse(responseCode = "403", description = "Forbidden - The user has insufficient rights", content = @Content(schema = @Schema(hidden = true))),
-		@ApiResponse(responseCode = "404", description = "Not Found - Project not found", content = @Content(schema = @Schema(hidden = true))),
-		@ApiResponse(responseCode = "409", description = "Conflict - Resource already exists", content = @Content(schema = @Schema(hidden = true)))})
-	@PostMapping(path = "/projects/{project}/environments/{environment}")
-	public void postProject(
+		@ApiResponse(responseCode = "404", description = "Not Found - Project or environment not found", content = @Content(schema = @Schema(hidden = true))),
+		@ApiResponse(responseCode = "409", description = "Conflict - Properties already exists", content = @Content(schema = @Schema(hidden = true)))})
+	@PostMapping(path = "/projects/{project}/environments/{environment}/properties")
+	public void postProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath,
-			@RequestBody EnvironmentDTO envDto) {
+			@RequestBody Map<String, String> properties) {
 		
-		service.createEnvironment(projectPath, envPath, envDto);
+		service.createProperties(projectPath, envPath, properties);
 	}
 	
-	@Operation(description = "Insert or update an environment at the given path")
+	@Operation(description = "Insert or updates the properties for the given project and environment")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK"),
+		@ApiResponse(responseCode = "400", description = "Bad Request - Empty properties"),
 		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
 		@ApiResponse(responseCode = "403", description = "Forbidden - The user has insufficient rights", content = @Content(schema = @Schema(hidden = true))),
-		@ApiResponse(responseCode = "404", description = "Not Found - Project not found", content = @Content(schema = @Schema(hidden = true)))})
-	@PutMapping(path = "/projects/{project}/environments/{environment}")
-	public void putProject(
-			@PathVariable("project") String projectPath,
-			@PathVariable("environment") String envPath,
-			@RequestBody EnvironmentDTO envDto) {
-		
-		service.updateEnvironment(projectPath, envPath, envDto);
-	}
-	
-	@Operation(description = "Delete an environment at the given path")
-	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "OK"),
-		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
 		@ApiResponse(responseCode = "404", description = "Not Found - Project or environment not found", content = @Content(schema = @Schema(hidden = true)))})
-	@DeleteMapping(path = "/projects/{project}/environments/{environment}")
-	public void deleteProject(
+	@PutMapping(path = "/projects/{project}/environments/{environment}/properties")
+	public void putProperties(
+			@PathVariable("project") String projectPath,
+			@PathVariable("environment") String envPath,
+			@RequestBody Map<String, String> properties) {
+		
+		service.updateProperties(projectPath, envPath, properties);
+	}
+	
+	@Operation(description = "Insert or updates the properties for the given project and environment")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK"),
+		@ApiResponse(responseCode = "401", description = "Unauthorized - The user is not authorized", content = @Content(schema = @Schema(hidden = true))),
+		@ApiResponse(responseCode = "403", description = "Forbidden - The user has insufficient rights", content = @Content(schema = @Schema(hidden = true))),
+		@ApiResponse(responseCode = "404", description = "Not Found - Project or environment not found", content = @Content(schema = @Schema(hidden = true)))})
+	@DeleteMapping(path = "/projects/{project}/environments/{environment}/properties")
+	public void deleteProperties(
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {
 		
-		service.deleteEnvironment(projectPath, envPath);
+		service.deleteProperties(projectPath, envPath);
 	}
 }

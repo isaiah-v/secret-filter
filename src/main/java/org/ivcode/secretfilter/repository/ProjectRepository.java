@@ -22,5 +22,5 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, UUID> {
 	
 	@Modifying
 	@Query("DELETE FROM ProjectEntity p WHERE UPPER(p.path)=UPPER(:path)")
-	public void deleteProject(@Param("path") String path);
+	public int deleteProject(@Param("path") String path);
 }

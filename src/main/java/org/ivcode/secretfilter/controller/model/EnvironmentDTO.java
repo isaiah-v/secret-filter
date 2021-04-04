@@ -29,6 +29,8 @@ public class EnvironmentDTO {
 		this.readable = Boolean.TRUE.equals(entity.getReadable());
 	}
 
+	
+	@Schema(description = "The environment's name")
 	public String getName() {
 		return name;
 	}
@@ -37,6 +39,7 @@ public class EnvironmentDTO {
 		this.name = name;
 	}
 
+	@Schema(description = "A description of the environment")
 	public String getDescription() {
 		return description;
 	}
@@ -45,6 +48,7 @@ public class EnvironmentDTO {
 		this.description = description;
 	}
 
+	@Schema(description = "If true, all authenticated users have read access to property values. Otherwise, property values will be masked for non-admin users")
 	public boolean isReadable() {
 		return readable;
 	}

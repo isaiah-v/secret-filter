@@ -26,6 +26,7 @@ public class ProjectDTO {
 		this.description = entity.getDescription();
 	}
 
+	@Schema(description = "The project's name")
 	public String getName() {
 		return name;
 	}
@@ -34,6 +35,7 @@ public class ProjectDTO {
 		this.name = name;
 	}
 
+	@Schema(description = "A description of the project")
 	public String getDescription() {
 		return description;
 	}

@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import static java.util.stream.Collectors.*;
 
 import org.ivcode.secretfilter.controller.model.EnvironmentDTO;
+import org.ivcode.secretfilter.exception.ConflictException;
+import org.ivcode.secretfilter.exception.NotFoundException;
 import org.ivcode.secretfilter.repository.EnvironmentRepository;
 import org.ivcode.secretfilter.repository.model.EnvironmentEntity;
 import org.ivcode.secretfilter.repository.model.ProjectEntity;
@@ -36,6 +38,12 @@ public class EnvironmentService {
 	public List<String> getPaths(String projectPath) {
 		projectPath = notBlank(trim(projectPath));
 		
+		var project = projectService.readEntity(projectPath);
+		if(project==null) {
+			// 404 - project not found
+			throw new NotFoundException();
+		}
+		
 		return safe(envRepository.getEnvironments(projectPath))
 				.stream()
 				.map(EnvironmentEntity::getPath)
@@ -50,14 +58,14 @@ public class EnvironmentService {
 		
 		var existing = envRepository.getEnvironment(projectPath, envPath);
 		if (existing != null) {
-			// TODO
-			throw new IllegalArgumentException();
+			// 409 - env already exists
+			throw new ConflictException();
 		}
 
 		var project = projectService.readEntity(projectPath);
 		if (project == null) {
-			// TODO
-			throw new IllegalArgumentException();
+			// 404 = project not found
+			throw new NotFoundException();
 		}
 
 		var entity = createEntity(envPath, envDto, project);
@@ -70,10 +78,9 @@ public class EnvironmentService {
 		envPath = notBlank(trim(envPath));
 		
 		var entity = envRepository.getEnvironment(projectPath, envPath);
-
 		if (entity == null) {
-			// TODO 404
-			throw new IllegalStateException();
+			// 404 - project or env not found
+			throw new NotFoundException();
 		}
 
 		return new EnvironmentDTO(entity);
@@ -95,11 +102,16 @@ public class EnvironmentService {
 		
 		var existing = envRepository.getEnvironment(projectPath, envPath);
 		if (existing == null) {
-			// TODO
-			throw new IllegalArgumentException();
+			var project = projectService.readEntity(projectPath);
+			if (project == null) {
+				// 404 - project not found
+				throw new NotFoundException();
+			}
+			
+			envRepository.save(createEntity(envPath, envDto, project));
+		} else {
+			updateEntity(existing, envPath, envDto);
 		}
-
-		updateEntity(existing, envPath, envDto);
 	}
 
 	@Transactional
@@ -109,8 +121,8 @@ public class EnvironmentService {
 		
 		var entity = envRepository.getEnvironment(projectPath, envPath);
 		if(entity==null) {
-			// TODO 
-			throw new IllegalArgumentException();
+			// 404 - project or env not found
+			throw new NotFoundException();
 		}
 		
 		envRepository.deleteEnvironment(entity);

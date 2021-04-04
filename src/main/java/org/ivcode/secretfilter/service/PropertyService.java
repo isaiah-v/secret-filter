@@ -12,6 +12,9 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.ivcode.secretfilter.exception.BadRequest;
+import org.ivcode.secretfilter.exception.ConflictException;
+import org.ivcode.secretfilter.exception.NotFoundException;
 import org.ivcode.secretfilter.repository.PropertiesRepository;
 import org.ivcode.secretfilter.repository.model.EnvironmentEntity;
 import org.ivcode.secretfilter.repository.model.PropertyEntity;
@@ -25,7 +28,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class PropertiesService {
+public class PropertyService {
 
 	private static final String VALUE_MASK = "******";
 	
@@ -38,20 +41,20 @@ public class PropertiesService {
 	@Transactional
 	public void createProperties(String projectPath, String envPath, Map<String, String> properties) {
 		if (properties == null || properties.isEmpty()) {
-			// TODO
-			throw new IllegalStateException();
+			// 400 - properties must be defined
+			throw new BadRequest();
 		}
 
 		var existing = repository.getProperties(projectPath, envPath);
 		if (existing != null && !existing.isEmpty()) {
-			// TODO
-			throw new IllegalArgumentException();
+			// 409 - Conflict
+			throw new ConflictException();
 		}
 
 		var env = environmentService.readEntity(projectPath, envPath);
 		if (env == null) {
-			// TODO
-			throw new IllegalArgumentException();
+			// 404
+			throw new NotFoundException();
 		}
 
 		var entities = toEntities(env, properties);
@@ -60,6 +63,12 @@ public class PropertiesService {
 
 	@Transactional
 	public Map<String, String> readProperties(String projectPath, String envPath, boolean limited) {
+		var env = environmentService.readEntity(projectPath, envPath);
+		if(env==null) {
+			// 404 - env or project not found
+			throw new NotFoundException();
+		}
+		
 		var entities = repository.getProperties(projectPath, envPath);
 		return toProperties(entities, limited);
 	}
@@ -67,13 +76,15 @@ public class PropertiesService {
 	@Transactional
 	public void updateProperties(String projectPath, String envPath, Map<String, String> properties) {
 		if (properties == null || properties.isEmpty()) {
-			// TODO
-			throw new IllegalStateException();
+			// 400 - properties must be defined
+			throw new BadRequest();
 		}
 
 		var entities = repository.getProperties(projectPath, envPath);
 
-		var lookup = properties.entrySet().stream().map(e -> new MutablePair<>(e.getKey(), e.getValue()))
+		var lookup = properties.entrySet()
+				.stream()
+				.map(e -> new MutablePair<>(e.getKey(), e.getValue()))
 				.collect(toMap(p -> trim(lowerCase(p.left)), p -> p));
 
 		EnvironmentEntity env = null;
@@ -107,6 +118,11 @@ public class PropertiesService {
 	@Transactional
 	public void deleteProperties(String projectPath, String envPath) {
 		var entities = repository.getProperties(projectPath, envPath);
+		if(entities==null || entities.isEmpty()) {
+			// 404
+			throw new NotFoundException();
+		}
+		
 		repository.deleteAll(entities);
 	}
 

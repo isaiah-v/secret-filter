@@ -8,6 +8,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.ivcode.secretfilter.controller.model.ProjectDTO;
+import org.ivcode.secretfilter.exception.ConflictException;
+import org.ivcode.secretfilter.exception.NotFoundException;
 import org.ivcode.secretfilter.repository.ProjectRepository;
 import org.ivcode.secretfilter.repository.model.ProjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,10 @@ public class ProjectsService {
 	@Transactional
 	public void createProject(String path, ProjectDTO dto) {
 		var existing = repository.find(path);
+		
 		if (existing != null) {
-			// TODO error
-			throw new RuntimeException();
+			// 409 conflict
+			throw new ConflictException();
 		}
 
 		var entity = createEntity(path, dto);
@@ -46,7 +49,8 @@ public class ProjectsService {
 		var entity = repository.find(path);
 
 		if (entity == null) {
-			// TODO 404
+			// 404 not found
+			throw new NotFoundException();
 		}
 
 		return new ProjectDTO(entity);
@@ -54,23 +58,25 @@ public class ProjectsService {
 
 	@Transactional
 	public ProjectEntity readEntity(String path) {
-		return repository.find(path);
+		var entity = repository.find(path);
+		return entity;
 	}
 
 	@Transactional
 	public void updateProject(String path, ProjectDTO dto) {
 		var entity = repository.find(path);
 		if (entity == null) {
-			// TODO error
-			throw new RuntimeException();
+			repository.save(createEntity(path, dto));
+		} else {
+			updateEntity(entity, path, dto);
 		}
-
-		updateEntity(entity, path, dto);
 	}
 
 	@Transactional
 	public void deleteProject(String path) {
-		repository.deleteProject(path);
+		if(repository.deleteProject(path)==0) {
+			throw new NotFoundException();
+		}
 	}
 
 	private ProjectEntity createEntity(String path, ProjectDTO dto) {

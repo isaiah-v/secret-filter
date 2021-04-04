@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 /**
@@ -34,6 +39,9 @@ public class FilterController {
 	@Autowired
 	private FilterService filterService;
 
+	@Operation(description = "Replaces a resource's placeholds with the property values defines in the defined project and environment")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(hidden = true)))})
 	@GetMapping(path = "/projects/{project}/environments/{environment}/filter", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<StreamingResponseBody> getProperties(@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath, @RequestParam("url") URL url) throws IOException {

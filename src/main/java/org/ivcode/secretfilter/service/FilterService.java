@@ -25,7 +25,7 @@ public class FilterService {
 	private EnvironmentService environmentService;
 	
 	@Autowired
-	private PropertiesService propertiesService;
+	private PropertyService propertiesService;
 
 	public Reader createReader(URL url) throws IOException {
 		return new InputStreamReader(url.openStream());
