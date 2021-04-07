@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 
 /**
- * Open API annotations
+ * Open API Annotations
  * @author isaiah
  */
 

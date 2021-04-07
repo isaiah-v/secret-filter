@@ -3,7 +3,7 @@ package org.ivcode.secretfilter.controller;
 import java.util.Map;
 
 import org.ivcode.secretfilter.service.PropertyService;
-import org.ivcode.secretfilter.utils.SecurityUtils;
+import org.ivcode.secretfilter.utils.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +36,9 @@ public class PropertyController {
 	@Autowired
 	private PropertyService service;
 	
+	@Autowired
+	private SecurityHelper securityHelper;
+	
 	@Operation(description = "Return the available properties for the given project and environment. Note the property values returned will be masked unless the user has admin rights or the environment is set as readable")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "OK"),
@@ -46,7 +49,7 @@ public class PropertyController {
 			@PathVariable("project") String projectPath,
 			@PathVariable("environment") String envPath) {
 		
-		return service.readProperties(projectPath, envPath, SecurityUtils.isLimitedAccess());
+		return service.readProperties(projectPath, envPath, securityHelper.isLimitedAccess());
 	}
 	
 	@Operation(description = "Insert the properties for the given project and environment")

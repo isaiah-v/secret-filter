@@ -19,4 +19,7 @@ springdoc:
   oAuthFlow:
     authorizationUrl: https://ci.ivcode.org/keycloak/realms/ci/protocol/openid-connect/auth
     tokenUrl: https://ci.ivcode.org/keycloak/realms/ci/protocol/openid-connect/token
-    
+authority:
+  client: SCOPE_secret_filter
+  admin: ROLE_properties_admin
+   

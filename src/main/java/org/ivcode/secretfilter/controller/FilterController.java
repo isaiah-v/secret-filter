@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.net.URL;
 
 import org.ivcode.secretfilter.service.FilterService;
-import org.ivcode.secretfilter.utils.SecurityUtils;
+import org.ivcode.secretfilter.utils.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,6 +38,9 @@ public class FilterController {
 
 	@Autowired
 	private FilterService filterService;
+	
+	@Autowired
+	private SecurityHelper securityHelper;
 
 	@Operation(description = "Replaces a resource's placeholds with the property values defines in the defined project and environment")
 	@ApiResponses({
@@ -50,7 +53,7 @@ public class FilterController {
 
 		StreamingResponseBody responseBody = out -> {
 			try {
-				filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out), SecurityUtils.isLimitedAccess());
+				filterService.filter(projectPath, envPath, reader, new OutputStreamWriter(out), securityHelper.isLimitedAccess());
 				out.flush();
 			} finally {
 				reader.close();
