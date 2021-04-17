@@ -9,6 +9,7 @@ import java.net.URL;
 
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.commons.text.io.StringSubstitutorReader;
+import org.ivcode.secretfilter.exception.ForbiddenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +40,7 @@ public class FilterService {
 		
 		var env = environmentService.readEnvironment(projectPath, envPath);
 		if(!env.isReadable() && limited) {
-			// TODO
-			throw new IllegalArgumentException();
+			throw new ForbiddenException();
 		}
 		
 		var properties = propertiesService.readProperties(projectPath, envPath, limited);

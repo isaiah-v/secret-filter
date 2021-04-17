@@ -41,7 +41,7 @@ public class EnvironmentService {
 		var project = projectService.readEntity(projectPath);
 		if(project==null) {
 			// 404 - project not found
-			throw new NotFoundException();
+			throw new NotFoundException("project not found");
 		}
 		
 		return safe(envRepository.getEnvironments(projectPath))
@@ -59,13 +59,13 @@ public class EnvironmentService {
 		var existing = envRepository.getEnvironment(projectPath, envPath);
 		if (existing != null) {
 			// 409 - env already exists
-			throw new ConflictException();
+			throw new ConflictException("environment already defined");
 		}
 
 		var project = projectService.readEntity(projectPath);
 		if (project == null) {
 			// 404 = project not found
-			throw new NotFoundException();
+			throw new NotFoundException("project not found");
 		}
 
 		var entity = createEntity(envPath, envDto, project);
@@ -80,7 +80,7 @@ public class EnvironmentService {
 		var entity = envRepository.getEnvironment(projectPath, envPath);
 		if (entity == null) {
 			// 404 - project or env not found
-			throw new NotFoundException();
+			throw new NotFoundException("project or environment not defined");
 		}
 
 		return new EnvironmentDTO(entity);
@@ -105,7 +105,7 @@ public class EnvironmentService {
 			var project = projectService.readEntity(projectPath);
 			if (project == null) {
 				// 404 - project not found
-				throw new NotFoundException();
+				throw new NotFoundException("project not defined");
 			}
 			
 			envRepository.save(createEntity(envPath, envDto, project));
@@ -122,7 +122,7 @@ public class EnvironmentService {
 		var entity = envRepository.getEnvironment(projectPath, envPath);
 		if(entity==null) {
 			// 404 - project or env not found
-			throw new NotFoundException();
+			throw new NotFoundException("project not defined");
 		}
 		
 		envRepository.deleteEnvironment(entity);

@@ -1,12 +1,12 @@
 package org.ivcode.secretfilter.utils;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AccessStringBuilder {
 	
-	private List<String> authorities = new LinkedList<>();
+	private List<String> authorities = new ArrayList<>();
 	
 	public AccessStringBuilder hasAuthority(String authority) {
 		authorities.add(authority);

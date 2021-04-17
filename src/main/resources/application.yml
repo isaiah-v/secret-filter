@@ -1,5 +1,7 @@
 server:
   port: 8080
+  error:
+    include-message: always
 spring:
   security:
     oauth2:
@@ -22,4 +24,4 @@ springdoc:
 authority:
   client: SCOPE_secret_filter
   admin: ROLE_properties_admin
-   
+  

@@ -37,7 +37,7 @@ public class ProjectsService {
 		
 		if (existing != null) {
 			// 409 conflict
-			throw new ConflictException();
+			throw new ConflictException("project exists");
 		}
 
 		var entity = createEntity(path, dto);
@@ -50,7 +50,7 @@ public class ProjectsService {
 
 		if (entity == null) {
 			// 404 not found
-			throw new NotFoundException();
+			throw new NotFoundException("project not defined");
 		}
 
 		return new ProjectDTO(entity);
@@ -75,7 +75,7 @@ public class ProjectsService {
 	@Transactional
 	public void deleteProject(String path) {
 		if(repository.deleteProject(path)==0) {
-			throw new NotFoundException();
+			throw new NotFoundException("project not defined");
 		}
 	}
 

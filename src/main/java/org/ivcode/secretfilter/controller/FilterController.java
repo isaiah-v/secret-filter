@@ -60,8 +60,11 @@ public class FilterController {
 			}
 		};
 
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + url.getFile())
-				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(responseBody);
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + url.getFile())
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.body(responseBody);
 	}
 
 }

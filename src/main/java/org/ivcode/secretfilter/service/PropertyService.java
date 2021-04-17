@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.ivcode.secretfilter.exception.BadRequest;
+import org.ivcode.secretfilter.exception.BadRequestException;
 import org.ivcode.secretfilter.exception.ConflictException;
 import org.ivcode.secretfilter.exception.NotFoundException;
 import org.ivcode.secretfilter.repository.PropertiesRepository;
@@ -42,19 +42,19 @@ public class PropertyService {
 	public void createProperties(String projectPath, String envPath, Map<String, String> properties) {
 		if (properties == null || properties.isEmpty()) {
 			// 400 - properties must be defined
-			throw new BadRequest();
+			throw new BadRequestException("property values not defined");
 		}
 
 		var existing = repository.getProperties(projectPath, envPath);
 		if (existing != null && !existing.isEmpty()) {
 			// 409 - Conflict
-			throw new ConflictException();
+			throw new ConflictException("properties already defined");
 		}
 
 		var env = environmentService.readEntity(projectPath, envPath);
 		if (env == null) {
 			// 404
-			throw new NotFoundException();
+			throw new NotFoundException("project or environment does not exist");
 		}
 
 		var entities = toEntities(env, properties);
@@ -66,7 +66,7 @@ public class PropertyService {
 		var env = environmentService.readEntity(projectPath, envPath);
 		if(env==null) {
 			// 404 - env or project not found
-			throw new NotFoundException();
+			throw new NotFoundException("project or environment does not exist");
 		}
 		
 		var entities = repository.getProperties(projectPath, envPath);
@@ -77,7 +77,7 @@ public class PropertyService {
 	public void updateProperties(String projectPath, String envPath, Map<String, String> properties) {
 		if (properties == null || properties.isEmpty()) {
 			// 400 - properties must be defined
-			throw new BadRequest();
+			throw new BadRequestException("property values not defined");
 		}
 
 		var entities = repository.getProperties(projectPath, envPath);
@@ -120,7 +120,7 @@ public class PropertyService {
 		var entities = repository.getProperties(projectPath, envPath);
 		if(entities==null || entities.isEmpty()) {
 			// 404
-			throw new NotFoundException();
+			throw new NotFoundException("project or environment does not exist");
 		}
 		
 		repository.deleteAll(entities);
@@ -131,12 +131,11 @@ public class PropertyService {
 
 		for (var e : properties.entrySet()) {
 			var name = trimToNull(e.getKey());
-			var value = trimToNull(e.getValue());
+			var value = trimToEmpty(e.getValue());
 
 			// make sure both the key and value are defined
-			if (name == null || value == null) {
-				// TODO
-				throw new IllegalArgumentException();
+			if (name == null) {
+				throw new BadRequestException("property name not defined: \"" + e.getKey() + "\" = \"" + e.getValue() + "\"");
 			}
 
 			var entity = new PropertyEntity();
