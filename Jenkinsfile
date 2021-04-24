@@ -5,6 +5,7 @@ pipeline {
         PROJECT_NAME = 'secret-filter'
         DOCKER_REGISTRY = credentials('HOST_DOCKER_REGISTRY')
         RUNDECK_TOKEN = credentials('RUNDECK_TOKEN')
+        RUNDECK_JOB_ID = '69a6482f-c285-4e14-a915-03f5b4e665f4'
     }
 
     stages {
@@ -105,7 +106,7 @@ def doManifest() {
 
 def doRun() {
     echo 'Running...'
-    // TODO
+    sh "curl --request POST https://ci.ivcode.org/rundeck/api/36/job/${RUNDECK_JOB_ID}/executions?authtoken=\044RUNDECK_TOKEN"
 }
 
 def getVersion() {
